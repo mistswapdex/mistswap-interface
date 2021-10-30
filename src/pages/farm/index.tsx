@@ -460,7 +460,7 @@ export default function Farm(): JSX.Element {
         <meta key="description" name="description" content="Farm MIST" />
       </Head>
       <div className={classNames('sticky top-0 hidden lg:block md:col-span-1')} style={{ maxHeight: '40rem' }}>
-        <Menu positionsLength={positions.length} />
+        <Menu positionsLength={positions.length} farms={farms} />
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <Search

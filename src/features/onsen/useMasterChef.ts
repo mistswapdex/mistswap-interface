@@ -103,5 +103,46 @@ export default function useMasterChef(chef: Chef) {
     [account, chef, contract, sushi]
   )
 
-  return { deposit, withdraw, harvest }
+  const harvestAll = useCallback(
+    async (farms: any[]) => {
+      if (chef === Chef.MASTERCHEF) {
+        throw Error("MasterChef version 1 is not supported")
+      }
+
+      try {
+        let tx
+
+        const pids = farms.map(farm => farm.id)
+        const pendingSushis: BigNumber[] = await Promise.all(pids.map(pid => contract?.pendingSushi(pid, account)))
+        const sum: BigNumber = pendingSushis.reduce((sum: BigNumber, value: BigNumber) => sum.add(value), BigNumber.from(0))
+        const balanceOf: BigNumber = await sushi?.balanceOf(contract?.address)
+
+        const calls = pids.map(pid => contract?.interface?.encodeFunctionData('harvest', [pid, account]));
+
+        // If MasterChefV2 doesn't have enough sushi to harvest all farms, batch in a harvest.
+        if (sum.gt(balanceOf)) {
+          tx = await contract?.batch(
+            [
+              contract?.interface?.encodeFunctionData('harvestFromMasterChef'),
+              ...calls
+            ],
+            true
+          )
+        } else {
+          tx = await contract?.batch(
+            calls,
+            true
+          )
+        }
+
+        return tx
+      } catch (e) {
+        console.error(e)
+        return e
+      }
+    },
+    [account, chef, contract, sushi]
+  )
+
+  return { deposit, withdraw, harvest, harvestAll }
 }

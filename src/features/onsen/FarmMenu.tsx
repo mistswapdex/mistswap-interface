@@ -1,15 +1,24 @@
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId, CurrencyAmount, MASTERCHEF_V2_ADDRESS } from '@mistswapdex/sdk'
 import NavLink from '../../components/NavLink'
-import React from 'react'
+import React, { useState } from 'react'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import useMasterChef from './useMasterChef'
+import { Chef } from './enum'
+import { MIST } from '../../config/tokens'
 
-const Menu = ({ positionsLength }) => {
+const Menu = ({ positionsLength, farms }) => {
+  useState()
   const { account, chainId } = useActiveWeb3React()
   const { i18n } = useLingui()
   const toggleWalletModal = useWalletModalToggle()
+
+  const { harvestAll } = useMasterChef(Chef.MASTERCHEF_V2)
+  const zero = CurrencyAmount.fromRawAmount(MIST[chainId], 0);
+  const userFarms = [...(farms || [])].filter(farm => farm.pending);
+  const total = userFarms ? userFarms.reduce((sum, farm) => farm.pendingSushi.add(sum), zero) : zero;
 
   return (
     <div className="space-y-4">
@@ -43,6 +52,14 @@ const Menu = ({ positionsLength }) => {
           {i18n._(t`All Farms`)}
         </a>
       </NavLink>
+
+      {/* <Link href=""> */}
+        <a className="flex items-center justify-between px-4 py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800"
+           onClick={async () => await harvestAll(userFarms)}
+        >
+          {i18n._(t`Harvest All (${total.toFixed(2)} MIST)`)}
+        </a>
+      {/* </Link> */}
 
       {/*chainId === ChainId.MAINNET && (
         <>
