@@ -13,6 +13,7 @@ export const BENTOBOX = {
   // [ChainId.FANTOM]: 'sushiswap/fantom-bentobox',
   // [ChainId.BSC]: 'sushiswap/bsc-bentobox',
   // [ChainId.ARBITRUM]: 'sushiswap/arbitrum-bentobox',
+  [ChainId.SMARTBCH]: 'mistswap/bentobox',
 }
 export const fetcher = async (chainId = ChainId.SMARTBCH, query, variables = undefined) =>
   pager(`${GRAPH_HOST[chainId]}/subgraphs/name/${BENTOBOX[chainId]}`, query, variables)

@@ -5,7 +5,9 @@ import { ChainId } from '@mistswapdex/sdk'
 import { GRAPH_HOST } from '../constants'
 import { request } from 'graphql-request'
 
-export const BLOCKS = {}
+export const BLOCKS = {
+  [ChainId.SMARTBCH]: 'blocklytics/ethereum-blocks',
+}
 
 export const fetcher = async (chainId = ChainId.SMARTBCH, query, variables = undefined) => {
   return request(`${GRAPH_HOST[chainId]}/subgraphs/name/${BLOCKS[chainId]}`, query, variables)

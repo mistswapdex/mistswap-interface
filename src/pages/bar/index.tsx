@@ -244,14 +244,14 @@ export default function Stake() {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  {/*
+
                   <p className="mb-1 text-lg font-bold text-right text-high-emphesis md:text-3xl">
                     {`${apr ? apr.toFixed(2) + '%' : i18n._(t`Loading...`)}`}
                   </p>
                   <p className="w-32 text-sm text-right text-primary md:w-64 md:text-base">
                     {i18n._(t`Yesterday's APR`)}
                   </p>
-                  */}
+
                 </div>
               </div>
               }

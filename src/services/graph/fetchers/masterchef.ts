@@ -13,14 +13,14 @@ import { getTokenSubset } from './exchange'
 import { request } from 'graphql-request'
 
 export const MASTERCHEF_V2 = {
-  [ChainId.SMARTBCH]: 'sushiswap/master-chefv2',
+  [ChainId.SMARTBCH]: 'mistswap/master-chefv2',
 }
 
 export const masterChefV2 = async (query, chainId = ChainId.SMARTBCH, variables = undefined) =>
   request(`${GRAPH_HOST[chainId]}/subgraphs/name/${MASTERCHEF_V2[chainId]}`, query, variables)
 
 export const MASTERCHEF_V1 = {
-  [ChainId.SMARTBCH]: 'sushiswap/master-chef',
+  [ChainId.SMARTBCH]: 'mistswap/master-chef',
 }
 
 export const masterChefV1 = async (query, chainId = ChainId.SMARTBCH, variables = undefined) =>
