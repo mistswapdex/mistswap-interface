@@ -11,6 +11,7 @@ import { ChainId } from '@mistswapdex/sdk'
 import { GRAPH_HOST } from '../constants'
 import { getTokenSubset } from './exchange'
 import { request } from 'graphql-request'
+import gql from 'graphql-tag'
 
 export const MASTERCHEF_V2 = {
   [ChainId.SMARTBCH]: 'mistswap/master-chefv2',
@@ -22,6 +23,9 @@ export const masterChefV2 = async (query, chainId = ChainId.SMARTBCH, variables 
 export const MASTERCHEF_V1 = {
   [ChainId.SMARTBCH]: 'mistswap/master-chef',
 }
+
+export const masterChefV1HealthCheck = async (chainId = ChainId.SMARTBCH) =>
+  request(`${GRAPH_HOST[chainId]}/subgraphs/name/${MASTERCHEF_V1[chainId]}`, gql('{pools{id}}'), undefined)
 
 export const masterChefV1 = async (query, chainId = ChainId.SMARTBCH, variables = undefined) =>
   request(`${GRAPH_HOST[chainId]}/subgraphs/name/${MASTERCHEF_V1[chainId]}`, query, variables)

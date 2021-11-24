@@ -5,6 +5,7 @@ import {
   getMasterChefV1TotalAllocPoint,
   getMasterChefV2Farms,
   getMasterChefV2PairAddreses,
+  masterChefV1HealthCheck,
 } from '../fetchers'
 import { useEffect, useMemo } from 'react'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -13,6 +14,7 @@ import { ChainId } from '@mistswapdex/sdk'
 import { Chef } from '../../../features/onsen/enum'
 import concat from 'lodash/concat'
 import useActiveWeb3React from '../../../hooks/useActiveWeb3React'
+import { usePendingSushi } from '../../../features/onsen/hooks'
 
 export * from './bentobox'
 export * from './blocks'
@@ -38,6 +40,17 @@ export function useMasterChefV1SushiPerBlock(swrConfig = undefined) {
     swrConfig
   )
   return data
+}
+
+// returns false if there was error fetching data from the graph, true otherwise
+export function useMasterChefV1HealthCheck(chainId = undefined, swrConfig = undefined) {
+  const { error } = useSWR(
+    'masterChefV1HealthCheck',
+    () => masterChefV1HealthCheck(chainId),
+    swrConfig
+  )
+
+  return error === undefined
 }
 
 export function useMasterChefV1Farms(variables = undefined, chainId = undefined, swrConfig = undefined) {
