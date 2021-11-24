@@ -17,56 +17,7 @@ import { useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks';
 import { useHardcodedFarms } from './hardcodedFarms';
 import { getAddress } from '@ethersproject/address'
 
-export function useGetFarms(chainId, filter) {
-  const graphAvailable = useMasterChefV1HealthCheck()
-  let farms = []
-  let [mistPriceUSD, bchPriceUSD] = [0., 0.]
-  let pairAddresses;
-  let swapPairs;
-  let kashiPairs = [] // unused
-  let averageBlockTime = 0.;
-  let masterChefV1TotalAllocPoint = 0;
-  let masterChefV1SushiPerBlock = 0;
-  const positions = usePositions(chainId)
-
-  if (graphAvailable) {
-    pairAddresses = useFarmPairAddresses()
-    swapPairs = useSushiPairs({ subset: pairAddresses, shouldFetch: !!pairAddresses })
-
-    farms = useFarms()
-    // farms.forEach(val => {
-    //   val.id = Number(val.id)
-    //   val.chef = Number(val.chef)
-
-    //   val.pendingSushi = usePendingSushi(val)
-    //   val.pending = Number.parseFloat(val.pendingSushi?.toFixed())
-    // })
-    farms = farms.sort((a, b) => b.allocPoint - a.allocPoint);
-
-    [mistPriceUSD, bchPriceUSD] = [
-      useSushiPrice(),
-      useEthPrice(),
-    ]
-
-    averageBlockTime = useAverageBlockTime()
-    masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
-    masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
-  } else {
-    [farms, swapPairs] = useHardcodedFarms(chainId)
-
-    const flexUSDMistPool = farms.find((v) => v.pair === '0x437E444365aD9ed788e8f255c908bceAd5AEA645').pool;
-    const bchFlexUSDPool = farms.find((v) => v.pair === '0x24f011f12Ea45AfaDb1D4245bA15dCAB38B43D13').pool;
-    if (bchFlexUSDPool.reserves) {
-      bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
-    }
-    if (flexUSDMistPool.reserves) {
-      mistPriceUSD = 1. / ( Number.parseFloat(flexUSDMistPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDMistPool.reserves[1].toFixed()))
-    }
-
-    averageBlockTime = 5.5
-    masterChefV1SushiPerBlock = 10
-  }
-
+function transformFarms(farms, { chainId, filter, mistPriceUSD, bchPriceUSD, averageBlockTime, swapPairs, kashiPairs, masterChefV1SushiPerBlock, masterChefV1TotalAllocPoint, positions }) {
   const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
     MASTERCHEF_ADDRESS[chainId],
     farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
@@ -221,4 +172,68 @@ export function useGetFarms(chainId, filter) {
     .filter((farm) => {
       return filter in FILTER ? FILTER[filter](farm) : true
     })
+}
+
+export function getFarmsFromGraph(chainId, filter) {
+  let farms = []
+  let [mistPriceUSD, bchPriceUSD] = [0., 0.]
+  let pairAddresses;
+  let swapPairs;
+  let kashiPairs = [] // unused
+  let averageBlockTime = 0.;
+  let masterChefV1TotalAllocPoint = 0;
+  let masterChefV1SushiPerBlock = 0;
+  const positions = usePositions(chainId);
+
+  pairAddresses = useFarmPairAddresses()
+  swapPairs = useSushiPairs({ subset: pairAddresses, shouldFetch: !!pairAddresses })
+
+  farms = useFarms()
+  farms.forEach(val => {
+    val.id = Number(val.id)
+    val.chef = Number(val.chef)
+
+    val.pendingSushi = usePendingSushi(val)
+    val.pending = Number.parseFloat(val.pendingSushi?.toFixed())
+  })
+  farms = farms.sort((a, b) => b.allocPoint - a.allocPoint);
+
+  [mistPriceUSD, bchPriceUSD] = [
+    useSushiPrice(),
+    useEthPrice(),
+  ]
+
+  averageBlockTime = useAverageBlockTime()
+  masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
+  masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
+
+  return transformFarms(farms, { chainId, filter, mistPriceUSD, bchPriceUSD, averageBlockTime, swapPairs, kashiPairs, masterChefV1SushiPerBlock, masterChefV1TotalAllocPoint, positions })
+}
+
+export function getFarmsFromRpc(chainId, filter) {
+  let farms
+  let [mistPriceUSD, bchPriceUSD] = [0., 0.]
+  let pairAddresses;
+  let swapPairs
+  let kashiPairs = [] // unused
+  let averageBlockTime = 0.;
+  let masterChefV1TotalAllocPoint = 0;
+  let masterChefV1SushiPerBlock = 0;
+  const positions = usePositions(chainId);
+
+  [farms, swapPairs] = useHardcodedFarms(chainId)
+
+  const flexUSDMistPool = farms.find((v) => v.pair === '0x437E444365aD9ed788e8f255c908bceAd5AEA645').pool;
+  const bchFlexUSDPool = farms.find((v) => v.pair === '0x24f011f12Ea45AfaDb1D4245bA15dCAB38B43D13').pool;
+  if (bchFlexUSDPool.reserves) {
+    bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
+  }
+  if (flexUSDMistPool.reserves) {
+    mistPriceUSD = 1. / ( Number.parseFloat(flexUSDMistPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDMistPool.reserves[1].toFixed()))
+  }
+
+  averageBlockTime = 5.5
+  masterChefV1SushiPerBlock = 10
+
+  return transformFarms(farms, { chainId, filter, mistPriceUSD, bchPriceUSD, averageBlockTime, swapPairs, kashiPairs, masterChefV1SushiPerBlock, masterChefV1TotalAllocPoint, positions })
 }
