@@ -2,7 +2,6 @@ import { ChainId, Currency, NATIVE, MIST_ADDRESS } from '@mistswapdex/sdk'
 import { Feature, featureEnabled } from '../../functions/feature'
 import React, { useEffect, useState } from 'react'
 
-import { ANALYTICS_URL } from '../../constants'
 import Buy from '../../features/on-ramp/ramp'
 import ExternalLink from '../ExternalLink'
 import Image from 'next/image'
@@ -60,44 +59,7 @@ function AppBar(): JSX.Element {
                           {i18n._(t`Pool`)}
                         </a>
                       </NavLink>
-                      {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
-                        <NavLink href={'/migrate'}>
-                          <a
-                            id={`migrate-nav-link`}
-                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                          >
-                            {i18n._(t`Migrate`)}
-                          </a>
-                        </NavLink>
-                      )}
-                      {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (
-                        <NavLink href={'/farm'}>
-                          <a
-                            id={`farm-nav-link`}
-                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                          >
-                            {i18n._(t`Farm`)}
-                          </a>
-                        </NavLink>
-                      )}
-                      {chainId && featureEnabled(Feature.KASHI, chainId) && (
                         <>
-                          <NavLink href={'/lend'}>
-                            <a
-                              id={`lend-nav-link`}
-                              className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                            >
-                              {i18n._(t`Lend`)}
-                            </a>
-                          </NavLink>
-                          <NavLink href={'/borrow'}>
-                            <a
-                              id={`borrow-nav-link`}
-                              className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                            >
-                              {i18n._(t`Borrow`)}
-                            </a>
-                          </NavLink>
                         </>
                       )}
                       {chainId && featureEnabled(Feature.STAKING, chainId) && (
@@ -111,13 +73,6 @@ function AppBar(): JSX.Element {
                         </NavLink>
                       )}
                       {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
-                        <ExternalLink
-                          id={`analytics-nav-link`}
-                          href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
-                          className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                        >
-                          {i18n._(t`Analytics`)}
-                        </ExternalLink>
                       )}
                     </div>
                   </div>
@@ -134,7 +89,7 @@ function AppBar(): JSX.Element {
                             address: '0xC41C680c60309d4646379eD62020c534eB67b6f4',
                             symbol: 'xMIST',
                             decimals: 18,
-                            image: 'https://assets.mistswap.fi/blockchains/smartbch/assets/0xC41C680c60309d4646379eD62020c534eB67b6f4/logo.png',
+                            image: 'https://assets.mintwap.cash/blockchains/smartbch/assets/0xC41C680c60309d4646379eD62020c534eB67b6f4/logo.png',
                           }} />
                       </>
                     )}
@@ -148,7 +103,7 @@ function AppBar(): JSX.Element {
                             address: MIST_ADDRESS[chainId],
                             symbol: 'MIST',
                             decimals: 18,
-                            image: 'https://assets.mistswap.fi/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
+                            image: 'https://assets.mistswap.cash/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
                           }} />
                       </>
                     )}
@@ -251,61 +206,6 @@ function AppBar(): JSX.Element {
                     {i18n._(t`Migrate`)}
                   </a>
                 </Link>
-                )}
-
-                {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (
-                  <Link href={'/farm'}>
-                    <a
-                      id={`farm-nav-link`}
-                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                    >
-                      {' '}
-                      {i18n._(t`Farm`)}
-                    </a>
-                  </Link>
-                )}
-
-                {chainId && featureEnabled(Feature.KASHI, chainId) && (
-                  <>
-                    <Link href={'/lend'}>
-                      <a
-                        id={`lend-nav-link`}
-                        className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                      >
-                        {i18n._(t`Lend`)}
-                      </a>
-                    </Link>
-
-                    <Link href={'/borrow'}>
-                      <a
-                        id={`borrow-nav-link`}
-                        className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                      >
-                        {i18n._(t`Borrow`)}
-                      </a>
-                    </Link>
-                  </>
-                )}
-
-                {chainId && featureEnabled(Feature.STAKING, chainId) && (
-                  <Link href={'/stake'}>
-                    <a
-                      id={`stake-nav-link`}
-                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                    >
-                      {i18n._(t`Stake`)}
-                    </a>
-                  </Link>
-                )}
-
-                {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
-                  <ExternalLink
-                    id={`analytics-nav-link`}
-                    href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
-                    className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                  >
-                    {i18n._(t`Analytics`)}
-                  </ExternalLink>
                 )}
               </div>
             </Popover.Panel>
