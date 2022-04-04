@@ -43,6 +43,31 @@ const Menu = ({ positionsLength }) => {
         </a>
       </NavLink>
 
+      {chainId === ChainId.SMARTBCH_AMBER && (
+        <>
+          <NavLink
+            exact
+            href={`/farm?filter=lend`}
+            activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
+          >
+            <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
+              Lend Farms
+            </a>
+          </NavLink>
+          {/*
+          <NavLink
+            exact
+            href={`/farm?filter=mist`}
+            activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
+          >
+            <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
+              MIST Farms
+            </a>
+          </NavLink>
+          */}
+        </>
+      )}
+
       <NavLink
         href="/farm?filter=past"
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
@@ -52,28 +77,6 @@ const Menu = ({ positionsLength }) => {
         </a>
       </NavLink>
 
-      {/*chainId === ChainId.MAINNET && (
-        <>
-          <NavLink
-            exact
-            href={`/farm?filter=kashi`}
-            activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-          >
-            <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-              Kashi Farms
-            </a>
-          </NavLink>
-          <NavLink
-            exact
-            href={`/farm?filter=sushi`}
-            activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-          >
-            <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-              MISTswap Farms
-            </a>
-          </NavLink>
-        </>
-      )*/}
 
       {/*(chainId === ChainId.MAINNET || chainId === ChainId.MATIC) && (
         <NavLink

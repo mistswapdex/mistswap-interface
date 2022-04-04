@@ -378,15 +378,22 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH_AMBER, '0x9E93b1e6B6f169b793aFC72BB5241a0388418E2A', 18, 'FOG', 'FOGToken'),
         token1: new Token(ChainId.SMARTBCH_AMBER, '0x19E75581Ce31219c78E7996aEa2714EE88e8f059', 18, 'TEST', 'TESTToken'),
       },
+      "0xeB506DfC36c4b56a6E76FD29C2654515327a643E": {
+        type: "kashi",
+        farmId: 2,
+        allocPoint: 100000,
+        token0: MIST[ChainId.SMARTBCH_AMBER],
+        token1: WBCH[ChainId.SMARTBCH_AMBER],
+      },
     }
   };
 
-  const kashiPairs = [] // unused
+  const kashiPairs = []
   const swapPairs = []
   let farms = []
 
   for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
-    swapPairs.push({
+    const d = {
       id: pairAddress,
       reserveUSD: "100000",
       totalSupply: "1000",
@@ -403,7 +410,13 @@ export default function Farm(): JSX.Element {
         symbol: pair.token1.symbol,
         decimals: pair.token1.decimals
       },
-    })
+    }
+
+    if (pair.type === 'kashi') {
+      kashiPairs.push(d);
+    } else {
+      swapPairs.push(d);
+    }
 
     const f = {
       pair: pairAddress,
@@ -584,11 +597,11 @@ export default function Farm(): JSX.Element {
   }
 
   const FILTER = {
-    all: (farm) => farm.allocPoint !== 0,
+    all: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== 0,
     portfolio: (farm) => farm.pending !== 0,
+    lend: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== 0,
     past: (farm) => farm.allocPoint === 0,
-    // sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
-    // kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
+    // mist: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
     // '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
   }
 
